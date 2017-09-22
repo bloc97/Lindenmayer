@@ -5,6 +5,9 @@
  */
 package lindenmayer;
 
+import java.io.IOException;
+import static lindenmayer.Utils.readStringFile;
+
 /**
  *
  * @author bowen
@@ -13,9 +16,14 @@ public class Lindenmayer {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void main(String[] args) throws IOException {
+        
+        System.out.println(readStringFile(".gitignore"));
+                
+        
     }
+    
     
 }

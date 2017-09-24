@@ -5,9 +5,13 @@
  */
 package lindenmayer;
 
+import displayutils.JPanelLinden;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JComponent;
 import uvector.Vector2;
 
 /**
@@ -16,15 +20,24 @@ import uvector.Vector2;
  */
 public class Turtle2D implements Turtle {
     
+    public static double PIO180 = Math.PI / 180d;
+    public static double PIU180 = 180d / Math.PI;
+    
     private final LinkedList<State2D> stateStack;
     private State2D currentState;
     
     private double moveLength = 1;
-    private double turnAngle = 90;
+    private double turnAngle = Math.PI / 2;
+    
+    private JPanelLinden component;
     
     public Turtle2D() {
         stateStack = new LinkedList<>();
         currentState = new State2D();
+    }
+    
+    public void setComponent(JPanelLinden component) {
+        this.component = component;
     }
     
     @Override
@@ -32,6 +45,16 @@ public class Turtle2D implements Turtle {
         Vector2 diff = getMovementDifference();
         
         //Draw here
+        if (component != null) {
+            
+            double x0 = currentState.getPosition().getX();
+            double y0 = currentState.getPosition().getY();
+            
+            double x1 = x0 + diff.getX();
+            double y1 = y0 + diff.getY();
+            
+            component.addLine(x0, y0, x1, y1);
+        }
         
         move(diff);
     }
@@ -76,7 +99,7 @@ public class Turtle2D implements Turtle {
 
     @Override
     final public void init(Point2D position, double angle_deg) {
-        currentState = new State2D(position, angle_deg);
+        currentState = new State2D(position, angle_deg * PIO180);
     }
 
     @Override
@@ -86,13 +109,17 @@ public class Turtle2D implements Turtle {
 
     @Override
     public double getAngle() {
+        return getAngleRad() * PIU180;
+    }
+    
+    public double getAngleRad() {
         return currentState.getAngle();
     }
 
     @Override
     public void setUnits(double step, double delta) {
         moveLength = step;
-        turnAngle = delta;
+        turnAngle = delta * PIO180;
     }
     
 }

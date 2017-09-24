@@ -5,6 +5,7 @@
  */
 package displayutils;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,7 +17,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +32,8 @@ import javax.swing.SwingUtilities;
  */
 public class JPanelLinden extends Scene {
     
-    private final List<Line2D> lineList = new LinkedList<>();
+    private final List<LineStroke> lineList = new LinkedList<>();
+    private final List<Leaf> leafList = new LinkedList<>();
     
     private volatile boolean isReady = false;
     
@@ -121,9 +125,13 @@ public class JPanelLinden extends Scene {
         
     }
     
-    public void addLine(double x0, double y0, double x1, double y1) {
+    public void addLine(double x0, double y0, double x1, double y1, double width) {
         lock();
-        lineList.add(new Line2D.Double(x0, y0, x1, y1));
+        lineList.add(new LineStroke(new Line2D.Double(x0, y0, x1, y1), width));
+    }
+    public void addLeaf(double x, double y, double radius) {
+        lock();
+        leafList.add(new Leaf(new Point2D.Double(x, y), radius));
     }
     
     public void clearLines() {
@@ -139,7 +147,7 @@ public class JPanelLinden extends Scene {
     public boolean isReady() {
         return isReady;
     }
-
+    
     @Override
     protected void beforePaint() {
         
@@ -155,18 +163,39 @@ public class JPanelLinden extends Scene {
         //g.setColor(new Color(0, 75, 0));
         if (isReady) {
             Graphics2D g2 = (Graphics2D) g;
-            for (Line2D line : lineList) {
+            g2.setColor(new Color(0, 90, 0));
+            for (Leaf leaf : leafList) {
+                if (!isReady) {
+                    return;
+                }
+                double x = camera.getScreenX(leaf.getPoint().getX());
+                double y = camera.getScreenY(leaf.getPoint().getY());
+                double radius = camera.getScreenR(leaf.getRadius());
+                double r2 = radius / 2;
+                g2.fill(new Ellipse2D.Double(x - r2, y - r2, radius, radius));
+                
+                
+            }
+            
+            g2.setColor(Color.BLACK);
+            for (LineStroke line : lineList) {
                 if (!isReady) {
                     return;
                 }
                 
-                double screenX1 = camera.getScreenX(line.getX1());
-                double screenX2 = camera.getScreenX(line.getX2());
-                double screenY1 = camera.getScreenY(line.getY1());
-                double screenY2 = camera.getScreenY(line.getY2());
+                double screenX1 = camera.getScreenX(line.getLine().getX1());
+                double screenX2 = camera.getScreenX(line.getLine().getX2());
+                double screenY1 = camera.getScreenY(line.getLine().getY1());
+                double screenY2 = camera.getScreenY(line.getLine().getY2());
+                
+                int width = (int)camera.getScreenR(line.getWidth());
+                
+                g2.setStroke(new BasicStroke(width));
                 g2.draw(new Line2D.Double(screenX1, screenY1, screenX2, screenY2));
                 
             }
+            
+            
         }
     }
 

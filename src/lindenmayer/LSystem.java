@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import lindenmayer.tree.BranchNode;
+import lindenmayer.tree.Node;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -147,11 +149,15 @@ public class LSystem {
         
         return newSymbolList.iterator();
     }
-    public void tell(Turtle turtle, Symbol sym) {
+    public void tell(Turtle turtle, Symbol sym, boolean b) {
         if (actionDict.containsKey(sym)) {
             switch (actionDict.get(sym)) {
                 case "draw":
-                    turtle.draw();
+                    if (b) {
+                        turtle.draw();
+                    } else {
+                        turtle.move();
+                    }
                     break;
                 case "move":
                     turtle.move();
@@ -191,7 +197,11 @@ public class LSystem {
                     break;
                 default:
                     if (Character.isUpperCase(sym.getChar())) {
-                        turtle.draw();
+                        if (b) {
+                            turtle.draw();
+                        } else {
+                            turtle.move();
+                        }
                     } else if (Character.isLowerCase(sym.getChar())) {
                         turtle.move();
                     }
@@ -203,7 +213,7 @@ public class LSystem {
     
     public void tell(Turtle turtle, int n) {
         Iterator<Symbol> axiomIterator = getAxiom();
-        
+        turtle.setWidth(n);
         while(axiomIterator.hasNext()) {
             tell(turtle, axiomIterator.next(), n);
         }
@@ -225,7 +235,6 @@ public class LSystem {
             for (Symbol symbol : symbolList) {
                 Iterator<Symbol> expansion = rewrite(symbol);
                 
-                
                 if (expansion.hasNext()) {
                     while (expansion.hasNext()) {
                         newSymbolList.add(expansion.next());
@@ -233,11 +242,8 @@ public class LSystem {
                 } else {
                     newSymbolList.add(symbol);
                 }
-                
             }
-            
             symbolList = newSymbolList;
-            
         }
         
         return symbolList.iterator();
@@ -251,14 +257,14 @@ public class LSystem {
                     tell(turtle, expansion.next(), n-1);
                 }
             } else {
-                tell(turtle, sym);
+                tell(turtle, sym, true);
             }
             
         } else if (n == 1) {
-            tell(turtle, sym);
+            tell(turtle, sym, true);
         }
     }
-    public Rectangle2D getBoundingBox(Turtle turtle, Iterator<Symbol>seq, int n) {
+    public Rectangle2D getBoundingBox(Turtle turtle, Iterator<Symbol> seq, int n) {
         Point2D lastPosition = turtle.getPosition();
         double lastAngle = turtle.getAngle();
         
@@ -271,7 +277,7 @@ public class LSystem {
         Iterator<Symbol> symbolIterator = applyRules(seq, n);
         
         while (symbolIterator.hasNext()) {
-            tell(turtle, symbolIterator.next());
+            tell(turtle, symbolIterator.next(), false);
             double thisX = turtle.getPosition().getX();
             double thisY = turtle.getPosition().getY();
             
@@ -283,11 +289,49 @@ public class LSystem {
             
         }
         
-        
         turtle.init(lastPosition, lastAngle);
         
-        
         return new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
+    }
+    
+    public Node getTree(double turnAngle, double length, double startAngle, Iterator<Symbol> seq, int n) {
+        Node rootNode = new BranchNode(0, 0);
+        
+        LinkedList<Node> nodeStack = new LinkedList<>();
+        Node currentNode = rootNode;
+        double currentAngle = startAngle;
+        
+        Iterator<Symbol> symbolIterator = applyRules(seq, n);
+        while(symbolIterator.hasNext()) {
+            
+            Symbol sym = symbolIterator.next();
+            
+            switch (sym.getChar()) {
+                case '[':
+                    nodeStack.push(currentNode);
+                    break;
+                case ']':
+                    currentNode = nodeStack.pop();
+                    currentAngle = currentNode.getAngle();
+                    break;
+                case '+':
+                    currentAngle += turnAngle;
+                    break;
+                case '-':
+                    currentAngle -= turnAngle;
+                    break;
+                default:
+                    Node newNode = new BranchNode(length, currentAngle);
+                    currentNode.addChildrenNode(newNode);
+                    currentNode = newNode;
+                    break;
+            }
+            
+            
+        }
+        
+        return rootNode;
+        
     }
     
 }

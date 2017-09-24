@@ -31,6 +31,9 @@ public class Turtle2D implements Turtle {
     
     private JPanelLinden component;
     
+    private double startWidth = 1;
+    private double width = 1;
+    
     public Turtle2D() {
         stateStack = new LinkedList<>();
         currentState = new State2D();
@@ -38,6 +41,13 @@ public class Turtle2D implements Turtle {
     
     public void setComponent(JPanelLinden component) {
         this.component = component;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        this.startWidth = width;
+        this.width = width;
+        System.out.println(width);
     }
     
     @Override
@@ -53,7 +63,10 @@ public class Turtle2D implements Turtle {
             double x1 = x0 + diff.getX();
             double y1 = y0 + diff.getY();
             
-            component.addLine(x0, y0, x1, y1);
+            component.addLine(x0, y0, x1, y1, width);
+            if (width < startWidth / 2) {
+                component.addLeaf(x1, y1, diff.norm() * Math.sqrt(2d * (double)width / (double)startWidth));
+            }
         }
         
         move(diff);
@@ -83,12 +96,14 @@ public class Turtle2D implements Turtle {
 
     @Override
     public void push() {
+        width/=2;
         stateStack.push(currentState);
     }
 
     @Override
     public void pop() {
         if (!stateStack.isEmpty()) {
+            width*=2;
             currentState = stateStack.pop();
         }
     }

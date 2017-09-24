@@ -13,6 +13,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import javax.swing.JFrame;
 import static lindenmayer.Utils.readStringFile;
+import lindenmayer.tree.Node;
 
 /**
  *
@@ -46,7 +47,9 @@ public class Lindenmayer {
         
         LSystem.readJSONFile("denseleaf.json", gls, turtle);
         
-        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 7);
+        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 4);
+        Node rootNode = gls.getTree(turtle.getAngleRad(), 5, Math.PI/2,gls.getAxiom(), 4);
+        System.out.println(rootNode);
         //gls.tell(turtle, 2);
         
         panel.unlock();

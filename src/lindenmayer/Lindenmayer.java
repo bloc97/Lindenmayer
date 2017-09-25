@@ -40,6 +40,7 @@ public class Lindenmayer {
         frame.add(panel);
         
         panel.setFocusable(true);
+        panel.requestFocus();
         
         Turtle2D turtle = new Turtle2D();
         turtle.setComponent(panel);

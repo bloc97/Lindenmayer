@@ -340,7 +340,7 @@ public class LSystem {
                     break;
                 default:
                     if (Character.isUpperCase(sym.getChar())) {
-                        Node newNode = new BranchNode(length, currentAngle);
+                        Node newNode = new BranchNode(length + (Math.random() * (5 - -5) + -5), currentAngle);
                         currentNode.addChildrenNode(newNode);
                         currentNode = newNode;
                     }

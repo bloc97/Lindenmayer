@@ -185,7 +185,7 @@ public class JPanelLinden extends Scene {
     @Override
     protected void beforePaint() {
         noisePos += 0.01;
-        wind = targetWind * noise.eval(noisePos, 1);
+        wind = targetWind * (noise.eval(noisePos, 1) * 5d/6 + noise.eval(noisePos * 2, 1) * 1d/6);
     }
 
     @Override

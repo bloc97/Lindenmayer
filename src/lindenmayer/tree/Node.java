@@ -16,6 +16,10 @@ import uvector.Vector2;
  */
 public interface Node {
     public List<Node> getChildrenNodes();
+    public List<Node> getAllChildrenNodes();
+    
+    public int getDepth();
+    public int getReverseDepth();
     
     public double getLength();
     public double getAngle();

@@ -12,6 +12,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import javax.swing.JFrame;
+import static lindenmayer.Turtle2D.PIO180;
 import static lindenmayer.Utils.readStringFile;
 import lindenmayer.tree.Node;
 
@@ -45,11 +46,12 @@ public class Lindenmayer {
         
         LSystem gls = new LSystem();
         
-        LSystem.readJSONFile("denseleaf.json", gls, turtle);
+        LSystem.readJSONFile("testTree.json", gls, turtle);
         
-        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 4);
-        Node rootNode = gls.getTree(turtle.getAngleRad(), 5, Math.PI/2,gls.getAxiom(), 4);
-        System.out.println(rootNode);
+        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 8);
+        Node rootNode = gls.getTree(turtle.PIO180 * 25d, 10, turtle.PIO180 * -90, 0, 0, gls.getAxiom(), 7);
+        //System.out.println(rootNode);
+        panel.setRootNode(rootNode);
         //gls.tell(turtle, 2);
         
         panel.unlock();

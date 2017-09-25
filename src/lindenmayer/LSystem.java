@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import lindenmayer.tree.BranchNode;
+import lindenmayer.tree.LeafNode;
 import lindenmayer.tree.Node;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -294,36 +295,55 @@ public class LSystem {
         return new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
     }
     
-    public Node getTree(double turnAngle, double length, double startAngle, Iterator<Symbol> seq, int n) {
-        Node rootNode = new BranchNode(0, 0);
+    public Node getTree(double turnAngle, double length, double startAngle, double randomMin, double randomMax, Iterator<Symbol> seq, int n) {
+        Node rootNode = new BranchNode();
+        
+        boolean isReversed = false;//Math.random() < 0.5;
         
         LinkedList<Node> nodeStack = new LinkedList<>();
+        LinkedList<Double> angleStack = new LinkedList<>();
+        
         Node currentNode = rootNode;
         double currentAngle = startAngle;
         
+        int nindex = n;
+        
         Iterator<Symbol> symbolIterator = applyRules(seq, n);
         while(symbolIterator.hasNext()) {
-            
             Symbol sym = symbolIterator.next();
+            //System.out.print(sym);
             
             switch (sym.getChar()) {
                 case '[':
                     nodeStack.push(currentNode);
+                    angleStack.push(currentAngle);
+                    nindex--;
                     break;
                 case ']':
                     currentNode = nodeStack.pop();
-                    currentAngle = currentNode.getAngle();
+                    currentAngle = angleStack.pop();
+                    nindex++;
                     break;
                 case '+':
-                    currentAngle += turnAngle;
+                    if (!isReversed) {
+                        currentAngle += turnAngle + (Math.random() * (randomMax - randomMin) + randomMin);
+                    } else {
+                        currentAngle -= turnAngle + (Math.random() * (randomMax - randomMin) + randomMin);
+                    }
                     break;
                 case '-':
-                    currentAngle -= turnAngle;
+                    if (!isReversed) {
+                        currentAngle -= turnAngle + (Math.random() * (randomMax - randomMin) + randomMin);
+                    } else {
+                        currentAngle += turnAngle + (Math.random() * (randomMax - randomMin) + randomMin);
+                    }
                     break;
                 default:
-                    Node newNode = new BranchNode(length, currentAngle);
-                    currentNode.addChildrenNode(newNode);
-                    currentNode = newNode;
+                    if (Character.isUpperCase(sym.getChar())) {
+                        Node newNode = new BranchNode(length, currentAngle);
+                        currentNode.addChildrenNode(newNode);
+                        currentNode = newNode;
+                    }
                     break;
             }
             

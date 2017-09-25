@@ -70,6 +70,10 @@ public class Vector2 implements Vector<Vector2> {
         return set(1, d);
     }
     
+    public double getRot() {
+        return Math.atan2(getY(), getX());
+    }
+    
     public Vector2 rotate(double angle) {
         double s = Math.sin(angle);
         double c = Math.cos(angle);

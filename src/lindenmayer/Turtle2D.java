@@ -63,9 +63,9 @@ public class Turtle2D implements Turtle {
             double x1 = x0 + diff.getX();
             double y1 = y0 + diff.getY();
             
-            component.addLine(x0, y0, x1, y1, width);
+            //component.addLine(x0, y0, x1, y1, width);
             if (width < startWidth / 2) {
-                component.addLeaf(x1, y1, diff.norm() * Math.sqrt(2d * (double)width / (double)startWidth));
+                //component.addLeaf(x1, y1, diff.norm() * Math.sqrt(2d * (double)width / (double)startWidth));
             }
         }
         

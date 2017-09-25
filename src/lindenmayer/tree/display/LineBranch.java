@@ -35,11 +35,12 @@ public class LineBranch implements Drawable {
     @Override
     public void draw(Graphics2D g2, Camera camera) {
         int x1 = (int) camera.getScreenX(line.getX1());
-        int y1 = (int) camera.getScreenX(line.getY1());
+        int y1 = (int) camera.getScreenY(line.getY1());
         int x2 = (int) camera.getScreenX(line.getX2());
-        int y2 = (int) camera.getScreenX(line.getY2());
+        int y2 = (int) camera.getScreenY(line.getY2());
         int w  = (int) (int)camera.getScreenR(width);
-        g2.setStroke(new BasicStroke(w));
+        g2.setStroke(new BasicStroke(w, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL));
+
         g2.drawLine(x1, y1, x2, y2);
     }
     

@@ -150,6 +150,17 @@ public class BranchNode implements Node, Drawable {
         return totalSavedMass;
     
     }
+
+    @Override
+    public double getTotalMass() {
+        if (parentNode == null) {
+            return getMass();
+        } else {
+            return parentNode.getMass();
+        }
+    }
+
+    
     
     @Override
     public double getLength() {
@@ -229,11 +240,14 @@ public class BranchNode implements Node, Drawable {
         Vector2 newRelPos = getRelativeChildrenStartPosition();
         Vector2 endPosition = getStartPosition().add(newRelPos);
         
-        
+        /*
         double width = Math.sqrt(getMass()) / getLength();
         if (width < getLength()/10) {
             width = getLength()/10;
         }
+        */
+        
+        double width = Math.sqrt(getMass() / getTotalMass()) * 20;
         
         int x1 = (int) camera.getScreenX(startPosition.getX());
         int y1 = (int) camera.getScreenY(startPosition.getY());

@@ -25,6 +25,7 @@ public interface Node {
     public double getAngle();
     
     public double getMass();
+    public double getTotalMass();
     
     public void setParentNode(Node node);
     public void addChildrenNode(Node node);

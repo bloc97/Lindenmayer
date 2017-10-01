@@ -121,5 +121,13 @@ public class Turtle2D implements Turtle {
         moveLength = step;
         turnAngle = delta * PIO180;
     }
+
+    @Override
+    public Turtle getEmptyClone() {
+        Turtle turtle = new Turtle2D();
+        turtle.init(getPosition(), getAngle());
+        turtle.setUnits(moveLength, turnAngle / PIO180);
+        return turtle;
+    }
     
 }

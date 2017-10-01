@@ -36,4 +36,9 @@ public interface Turtle
      * @param delta unit angle change in degrees (for turnR and turnL)
      */
     public void setUnits(double step, double delta);
+    
+    /**
+     * @return a clone of the current turtle with disabled draw function
+     */
+    public Turtle getEmptyClone();
 }

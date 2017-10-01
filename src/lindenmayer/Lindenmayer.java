@@ -44,20 +44,19 @@ public class Lindenmayer {
         
         LSystem gls = new LSystem();
         
-        LSystem.readJSONFile("denseleaf.json", gls, turtle);
+        LSystem.readJSONFile("test_json/sierpinski.json", gls, turtle);
         
-        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 7);
-        //gls.tell(turtle, 2);
+        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 6);
+        gls.tell(turtle, 6);
         
         panel.unlock();
         panel.start();
         
         if (bound.getHeight() < bound.getWidth()) {
-            panel.getCamera().setScale(defaultH / (bound.getHeight() * 2.2));
+            panel.getCamera().setScale(defaultW / (bound.getWidth()));
         } else {
-            panel.getCamera().setScale(defaultW / (bound.getWidth() * 2.2));
+            panel.getCamera().setScale(defaultH / (bound.getHeight()));
         }
-        
         
         panel.getCamera().setxPos(bound.getCenterX());
         panel.getCamera().setyPos(bound.getCenterY());

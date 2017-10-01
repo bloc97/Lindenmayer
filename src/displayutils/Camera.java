@@ -160,13 +160,4 @@ public class Camera {
     public double getScreenR(double radius) {
         return (radius * getScale());
     }
-    
-    /*
-    private boolean enoughPrecisionToSee() {
-        if (xPos + (1*(0.5/scale)) == xPos || xPos - (1*(0.5/scale)) == xPos) {
-            return false;
-        } else {
-            return true;
-        }
-    }*/
 }

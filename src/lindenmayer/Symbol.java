@@ -34,7 +34,7 @@ public class Symbol {
 
     @Override
     public int hashCode() {
-        return super.hashCode(); //To change body of generated methods, choose Tools | Templates.
+        return c;
     }
 
     

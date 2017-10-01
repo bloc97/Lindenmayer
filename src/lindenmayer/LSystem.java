@@ -219,7 +219,7 @@ public class LSystem {
             symbolList.add(seq.next());
         }
         
-        for (int i=0; i<n-1; i++) {
+        for (int i=0; i<n; i++) {
             List<Symbol> newSymbolList = new LinkedList<>();
             
             for (Symbol symbol : symbolList) {
@@ -243,7 +243,7 @@ public class LSystem {
         return symbolList.iterator();
     }
     public void tell(Turtle turtle, Symbol sym, int n){
-        if (n > 1) {
+        if (n > 0) {
             Iterator<Symbol> expansion = rewrite(sym);
             
             if (expansion.hasNext()) {
@@ -254,11 +254,12 @@ public class LSystem {
                 tell(turtle, sym);
             }
             
-        } else if (n == 1) {
+        } else if (n == 0) {
             tell(turtle, sym);
         }
     }
     public Rectangle2D getBoundingBox(Turtle turtle, Iterator<Symbol>seq, int n) {
+        turtle = turtle.getEmptyClone();
         Point2D lastPosition = turtle.getPosition();
         double lastAngle = turtle.getAngle();
         

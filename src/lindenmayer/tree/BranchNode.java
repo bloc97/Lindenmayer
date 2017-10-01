@@ -23,6 +23,7 @@ import uvector.Vector2;
  */
 public class BranchNode implements Node, Drawable {
     private Node parentNode;
+    private Plant plant;
     private final List<Node> nodes = new LinkedList<>();
     
     
@@ -38,6 +39,8 @@ public class BranchNode implements Node, Drawable {
     
     double x = Math.random() * 80;
     
+    private boolean isGrown = false;
+    
     public BranchNode() {
         this(0, 0);
     }
@@ -46,6 +49,11 @@ public class BranchNode implements Node, Drawable {
         this.length = length;
         this.angle = angle;
         this.initialAngle = angle;
+    }
+
+    @Override
+    public void setIsGrown(boolean isGrown) {
+        this.isGrown = isGrown;
     }
 
     @Override
@@ -64,7 +72,7 @@ public class BranchNode implements Node, Drawable {
     public int getReverseDepth() {
         if (savedReverseDepth == -1) {
             if (nodes.isEmpty()) {
-                savedDepth = 0;
+                savedReverseDepth = 0;
             } else {
                 int maxReverseDepth = 0;
                 
@@ -75,16 +83,21 @@ public class BranchNode implements Node, Drawable {
                     }
                 }
                 
-                savedDepth = maxReverseDepth + 1;
+                savedReverseDepth = maxReverseDepth + 1;
             }
         }
-        return savedDepth;
+        return savedReverseDepth;
     }
     
     
     @Override
     public void setParentNode(Node node) {
         this.parentNode = node;
+    }
+
+    @Override
+    public void setPlant(Plant plant) {
+        this.plant = plant;
     }
     
     @Override
@@ -124,9 +137,9 @@ public class BranchNode implements Node, Drawable {
             if (node instanceof BranchNode) {
                 BranchNode branchNode = (BranchNode) node;
                 
-                Vector2 targetVector = new Vector2(branchNode.length, 0).rotate(branchNode.initialAngle).add(windforce * (1 - (Math.sqrt(branchNode.getMass() / totalMass))), 0);
+                Vector2 targetVector = new Vector2(1, 0).rotate(branchNode.initialAngle).add(windforce * (1 - (Math.sqrt(branchNode.getMass() / totalMass))), 0);
                 
-                Vector2 newVector = targetVector.copy().div(100 * branchNode.getMass() / totalMass).add(new Vector2(branchNode.length, 0).rotate(branchNode.angle));
+                Vector2 newVector = targetVector.copy().div(100 * branchNode.getMass() / totalMass).add(new Vector2(1, 0).rotate(branchNode.angle));
                 
                 
                 branchNode.angle = newVector.getRot();
@@ -156,7 +169,7 @@ public class BranchNode implements Node, Drawable {
         if (parentNode == null) {
             return getMass();
         } else {
-            return parentNode.getMass();
+            return parentNode.getTotalMass();
         }
     }
 
@@ -232,7 +245,7 @@ public class BranchNode implements Node, Drawable {
     @Override
     public void draw(Graphics2D g2, Camera camera) {
         
-        if (getLength() <= 0) {
+        if (getLength() <= 0 || !isGrown) {
             return;
         }
         
@@ -254,6 +267,7 @@ public class BranchNode implements Node, Drawable {
         int x2 = (int) camera.getScreenX(endPosition.getX());
         int y2 = (int) camera.getScreenY(endPosition.getY());
         int w  = (int) (int)camera.getScreenR(width);
+        g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(w, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL));
 
         g2.drawLine(x1, y1, x2, y2);
@@ -261,15 +275,15 @@ public class BranchNode implements Node, Drawable {
     
     public void drawLeaves(Graphics2D g2, Camera camera) {
         
-        if (getLength() <= 0 || getReverseDepth() > 1) {
+        if (getLength() <= 0 || getReverseDepth() > 0 || !isGrown) {
             return;
         }
         
         Vector2 startPosition = getStartPosition();
-        Vector2 newRelPos = getRelativeChildrenStartPosition().rotate(-0.60);
-        Vector2 newRelPos2 = getRelativeChildrenStartPosition().rotate(0.60);
+        Vector2 newRelPos = getRelativeChildrenStartPosition();//.rotate(0.60);
+        //Vector2 newRelPos2 = getRelativeChildrenStartPosition().rotate(0.60);
         Vector2 endPosition = getStartPosition().add(newRelPos);
-        Vector2 endPosition2 = getStartPosition().add(newRelPos2);
+        //Vector2 endPosition2 = getStartPosition().add(newRelPos2);
         
         
         double width = getLength();
@@ -278,14 +292,24 @@ public class BranchNode implements Node, Drawable {
         int y1 = (int) camera.getScreenY(startPosition.getY());
         int x2 = (int) camera.getScreenX(endPosition.getX());
         int y2 = (int) camera.getScreenY(endPosition.getY());
-        int x3 = (int) camera.getScreenX(endPosition2.getX());
-        int y3 = (int) camera.getScreenY(endPosition2.getY());
+        //int x3 = (int) camera.getScreenX(endPosition2.getX());
+        //int y3 = (int) camera.getScreenY(endPosition2.getY());
         int w  = (int) (int)camera.getScreenR(width);
         g2.setStroke(new BasicStroke(w, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL));
         g2.setColor(new Color(0, 75, 0));
         g2.drawLine(x1, y1, x2, y2);
-        g2.drawLine(x1, y1, x3, y3);
+        //g2.drawLine(x1, y1, x3, y3);
         g2.setColor(Color.BLACK);
         
     }
+    
+    public void drawDepth(Graphics2D g2, Camera camera) {
+        Vector2 startPosition = getStartPosition();
+        int x1 = (int) camera.getScreenX(startPosition.getX());
+        int y1 = (int) camera.getScreenY(startPosition.getY());
+        
+        g2.setColor(Color.YELLOW);
+        g2.drawString("" + getDepth(), x1, y1);
+    }
+    
 }

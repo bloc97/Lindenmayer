@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import lindenmayer.tree.BranchNode;
-import lindenmayer.tree.LeafNode;
 import lindenmayer.tree.Node;
 import org.json.JSONArray;
 import org.json.JSONObject;

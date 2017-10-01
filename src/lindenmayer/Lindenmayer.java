@@ -49,8 +49,8 @@ public class Lindenmayer {
         
         LSystem.readJSONFile("testTree.json", gls, turtle);
         
-        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 8);
-        Node rootNode = gls.getTree(turtle.PIO180 * 25d, 10, turtle.PIO180 * -90, 0, 0, gls.getAxiom(), 7);
+        Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 5);
+        Node rootNode = gls.getTree(turtle.PIO180 * 25d, 10, turtle.PIO180 * -90, 0, 0, gls.getAxiom(), 5);
         //System.out.println(rootNode);
         panel.setRootNode(rootNode);
         //gls.tell(turtle, 2);

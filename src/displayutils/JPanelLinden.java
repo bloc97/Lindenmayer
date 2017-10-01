@@ -33,7 +33,6 @@ import lindenmayer.LSystem;
 import lindenmayer.OpenSimplexNoise;
 import lindenmayer.Turtle2D;
 import lindenmayer.tree.BranchNode;
-import lindenmayer.tree.LeafNode;
 import lindenmayer.tree.Node;
 import lindenmayer.tree.display.Drawable;
 
@@ -53,9 +52,13 @@ public class JPanelLinden extends Scene {
     private OpenSimplexNoise noise = new OpenSimplexNoise();
     private double noisePos = 0;
     
+    private int currentDepth = 0;
+    
     public JPanelLinden(int xsize, int ysize) {
         setSize(xsize, ysize);
         this.setLayout(new BorderLayout(0, 0));
+        
+        this.setBackground(new Color(135, 206, 250));
         
         
         this.addMouseWheelListener(new MouseAdapter() {
@@ -121,6 +124,26 @@ public class JPanelLinden extends Scene {
                     case KeyEvent.VK_MINUS:
                         targetWind -= 1;
                         break;
+                    case KeyEvent.VK_OPEN_BRACKET:
+                        currentDepth--;
+                        rootNode.getAllChildrenNodes().forEach(node -> {
+                            if (node.getDepth() < currentDepth) {
+                                node.setIsGrown(true);
+                            } else {
+                                node.setIsGrown(false);
+                            }
+                        });
+                        break;
+                    case KeyEvent.VK_CLOSE_BRACKET:
+                        currentDepth++;
+                        rootNode.getAllChildrenNodes().forEach(node -> {
+                            if (node.getDepth() < currentDepth) {
+                                node.setIsGrown(true);
+                            } else {
+                                node.setIsGrown(false);
+                            }
+                        });
+                        break;
                     default :
                         break;
                  }
@@ -185,7 +208,8 @@ public class JPanelLinden extends Scene {
     @Override
     protected void beforePaint() {
         noisePos += 0.01;
-        wind = targetWind * (noise.eval(noisePos, 1) * 5d/6 + noise.eval(noisePos * 2, 1) * 1d/6);
+        //wind = targetWind * noise.eval(noisePos, 1);
+        wind = targetWind * ((noise.eval(noisePos, 1) * 5d/6 + noise.eval(noisePos * 2, 1) * 1d/6) + 0.4);
     }
 
     @Override

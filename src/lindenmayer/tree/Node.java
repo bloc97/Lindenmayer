@@ -18,6 +18,8 @@ public interface Node {
     public List<Node> getChildrenNodes();
     public List<Node> getAllChildrenNodes();
     
+    public void setIsGrown(boolean isGrown);
+    
     public int getDepth();
     public int getReverseDepth();
     
@@ -28,6 +30,8 @@ public interface Node {
     public double getTotalMass();
     
     public void setParentNode(Node node);
+    public void setPlant(Plant plant);
+    
     public void addChildrenNode(Node node);
     public Vector2 getRelativeChildrenStartPosition();
     public Vector2 getStartPosition();

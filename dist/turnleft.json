@@ -1,0 +1,12 @@
+{
+	"alphabet" : 	["R", "L", "+", "-"],
+	"rules" : {
+	},
+	"axiom" : "L-L-L-L-L",
+	"actions": {
+		"L":"draw", 
+		"R":"draw", 
+		"+":"turnR", 
+		"-":"turnL"},
+	"parameters" : {"step": 1, "angle":15, "start":[0,0,0]},
+}

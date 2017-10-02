@@ -22,7 +22,11 @@ public class Camera {
     
     private int screenOffsetx;
     private int screenOffsety;
-
+    
+    private double xSpd = 0;
+    private double ySpd = 0;
+    private boolean lock = true;
+    
     Camera(Scene currentScene, int xsize, int ysize) {
         this(currentScene, xsize/2, ysize/2, 1, xsize, ysize);
     }
@@ -78,10 +82,28 @@ public class Camera {
         return screenOffsety;
     }
     
+    public void lockSpeed() {
+        lock = true;
+    }
+    public void unlockSpeed() {
+        lock = false;
+    }
+    
+    public void updatePosition() {
+        xSpd /= 1.1d;
+        ySpd /= 1.1d;
+        if (!lock) {
+            addxPos(xSpd);
+            addyPos(ySpd);
+        }
+    }
+    
     public void addxPos(double x) {
+        xSpd = x;
         xPos += (x*(1/scale));
     }
     public void addyPos(double y) {
+        ySpd = y;
         yPos -= (y*(1/scale));
     }
     public void addScale(int n) {

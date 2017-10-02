@@ -53,9 +53,15 @@ public class Lindenmayer {
         
         Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 6);
         gls.tell(turtle, 6);
-        
+        /*
+        panel.addLine(bound.getMinX(), bound.getMinY(), bound.getMaxX(), bound.getMinY());
+        panel.addLine(bound.getMinX(), bound.getMinY(), bound.getMinX(), bound.getMaxY());
+        panel.addLine(bound.getMaxX(), bound.getMinY(), bound.getMaxX(), bound.getMaxY());
+        panel.addLine(bound.getMinX(), bound.getMaxY(), bound.getMaxX(), bound.getMaxY());
+        */
         panel.unlock();
         panel.start();
+        
         
         //Set the camera to the correct scale
         if (defaultH < defaultW) {

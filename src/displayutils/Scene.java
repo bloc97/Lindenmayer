@@ -75,6 +75,7 @@ public abstract class Scene extends JPanel implements Runnable {
         this.thread.start();
         activate();
     }
+    
     public void activate() {
         isActive = true;
     }

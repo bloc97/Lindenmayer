@@ -84,6 +84,17 @@ public class JPanelLinden extends Scene {
             }
         });
         
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    camera.unlockSpeed();
+                }
+            }
+            
+            
+        });
+        
         this.addMouseMotionListener(new MouseMotionAdapter() {
             
             private int lastX = -1;
@@ -95,9 +106,11 @@ public class JPanelLinden extends Scene {
                 lastY = e.getY();
             }
             
+            
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
+                    camera.lockSpeed();
                     if (lastX == -1 || lastY == -1) {
                         lastX = e.getX();
                         lastY = e.getY();
@@ -138,7 +151,7 @@ public class JPanelLinden extends Scene {
 
     @Override
     protected void beforePaint() {
-        
+        camera.updatePosition();
     }
 
     @Override

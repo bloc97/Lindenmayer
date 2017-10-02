@@ -11,8 +11,8 @@ import java.nio.file.Files;
 import java.util.Collection;
 
 /**
- *
- * @author bowen
+ * IFT2015 Devoir 1, Bowen Peng et Lifeng Wan
+ * @author bowen, lifeng
  */
 public class Utils {
     

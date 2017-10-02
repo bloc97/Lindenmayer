@@ -6,8 +6,6 @@
 package displayutils;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
@@ -17,10 +15,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 /**

@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import static lindenmayer.Utils.readStringFile;
 
 /**
- *
+ * IFT2015 Devoir 1, Bowen Peng et Lifeng Wan
  * @author bowen
  */
 public class Lindenmayer {
@@ -26,13 +26,18 @@ public class Lindenmayer {
      */
     public static void main(String[] args) throws IOException {
         
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); //Trouver la taille de l'ecran
+        if (args.length == 0) {
+            System.out.println("You must specify a L-System JSON file in the argument");
+            return;
+        }
+        
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); //Find the screen size
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
-        int defaultW = width*9/10; //Afficher un window un peu plus petit
-        int defaultH = height*9/10;
+        int defaultW = width;
+        int defaultH = height*19/20; //Show a window that is a bit shorter than full-screen
         
-        //Creer le Frame, Panel et start le thread leger
+        //Build the Frame, Panel and light thread
         JFrameLinden frame = new JFrameLinden(defaultW, defaultH);
         JPanelLinden panel = new JPanelLinden(defaultW, defaultH);
         frame.add(panel);
@@ -44,7 +49,7 @@ public class Lindenmayer {
         
         LSystem gls = new LSystem();
         
-        LSystem.readJSONFile("test_json/sierpinski.json", gls, turtle);
+        LSystem.readJSONFile(args[0], gls, turtle);
         
         Rectangle2D bound = gls.getBoundingBox(turtle, gls.getAxiom(), 6);
         gls.tell(turtle, 6);
@@ -52,10 +57,11 @@ public class Lindenmayer {
         panel.unlock();
         panel.start();
         
-        if (bound.getHeight() < bound.getWidth()) {
-            panel.getCamera().setScale(defaultW / (bound.getWidth()));
+        //Set the camera to the correct scale
+        if (defaultH < defaultW) {
+            panel.getCamera().setScale(defaultH / (bound.getHeight() * 1.2));
         } else {
-            panel.getCamera().setScale(defaultH / (bound.getHeight()));
+            panel.getCamera().setScale(defaultW / (bound.getWidth() * 1.2));
         }
         
         panel.getCamera().setxPos(bound.getCenterX());

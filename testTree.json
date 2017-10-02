@@ -1,7 +1,0 @@
-{
-    "alphabet": ["F", "X", "[", "]", "+", "-"],
-    "rules": {"X" : ["F[-X][X]F[-X]+FX"], "F" : "FF"},
-    "axiom": "X",
-    "actions": {"F":"draw", "X" : "stay", "[":"push","]":"pop", "-":"turnR", "+":"turnL"},
-    "parameters" : {"step": 1, "angle":25, "start":[0,0,-65]}
-}

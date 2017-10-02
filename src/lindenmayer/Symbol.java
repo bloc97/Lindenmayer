@@ -6,8 +6,8 @@
 package lindenmayer;
 
 /**
- *
- * @author bowen
+ * IFT2015 Devoir 1, Bowen Peng et Lifeng Wan
+ * @author bowen, lifeng
  */
 public class Symbol {
     private final char c;

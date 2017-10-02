@@ -1,7 +1,14 @@
 {
-    "alphabet": ["F", "G", "+", "-"],
-    "rules": {"F" : ["F-G+F+G-F"], "G" : "GG"},
-    "axiom": "F-G-G",
-    "actions": {"F":"draw", "G":"draw", "+":"turnL", "-":"turnR"},
-    "parameters" : {"step": 40, "angle":120, "start":[0,0,0]}
+	"alphabet" : 	["R", "L", "+", "-"],
+	"rules" : {
+		"L": ["R+L+R"],
+		"R": ["L-R-L"]
+	},
+	"axiom" : "R",
+	"actions": {
+		"L":"draw", 
+		"R":"draw", 
+		"+":"turnR", 
+		"-":"turnL"},
+	"parameters" : {"step": 1, "angle":60, "start":[0,0,0]},
 }

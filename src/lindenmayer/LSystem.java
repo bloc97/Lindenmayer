@@ -8,10 +8,6 @@ package lindenmayer;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.awt.geom.Rectangle2D;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,8 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- *
- * @author bowen
+ * IFT2015 Devoir 1, Bowen Peng et Lifeng Wan
+ * @author bowen, lifeng
  */
 public class LSystem {
     
@@ -32,10 +28,12 @@ public class LSystem {
     private String axiom = "";
     
     /**
-     * constructeur vide monte un système avec alphabet vide et sans règles
+     * Adds a symbol into this L-System
+     * @param sym Character
+     * @return Symbol representing the character
      */
-    /* méthodes d'initialisation de système */
     public Symbol addSymbol(char sym) {
+        //If dictionary contains character, returns symbol. Otherwise add to dictionary
         if (symbolDict.containsKey(sym)) {
             return symbolDict.get(sym);
         } else {
@@ -44,7 +42,13 @@ public class LSystem {
             return newSymbol;
         }
     }
+    /**
+     * Adds a rule into this L-System
+     * @param sym Character
+     * @param expansion Expansion rule of the character
+     */
     public void addRule(Symbol sym, String expansion) {
+        //If dictionary contains symbol, returns expansion string. Otherwise add to dictionary.
         if (ruleDict.containsKey(sym)) {
             ruleDict.get(sym).add(expansion);
         } else {
@@ -53,26 +57,45 @@ public class LSystem {
             ruleDict.put(sym, rules);
         }
     }
+    /**
+     * Adds an action into this L-System
+     * @param sym Character
+     * @param action Action of that character
+     */
     public void setAction(Symbol sym, String action) {
         actionDict.put(sym, action);
     }
+
+    /**
+     * Sets the starting axiom of this L-System
+     * @param str Starting string
+     */
     public void setAxiom(String str){
         axiom = str;
     }
  
-    /* initialisation par fichier */
+    /**
+     * Applies the symbols, rules, actions and axiom of JSON file to a L-System and Turtle instance
+     * @param filename Path to json file
+     * @param system L-System instance
+     * @param turtle Turtle instance
+     * @throws java.io.IOException
+     */
     public static void readJSONFile(String filename, LSystem system, Turtle turtle) throws java.io.IOException {
         JSONObject input = new JSONObject(Utils.readStringFile(filename));
         JSONArray alphabet = input.getJSONArray("alphabet");
         JSONObject rules = input.getJSONObject("rules");
         JSONObject actions = input.getJSONObject("actions");
+        //For all the characters in the JSON
         for (Object o : alphabet) {
             if (o instanceof String) {
                 if (!((String) o).isEmpty()) {
                     char character = ((String) o).charAt(0);
                     String strChar = "" + character;
+                    //Add the character as symbol
                     Symbol s = system.addSymbol(character);
                     
+                    //Add the character's rule if exists
                     JSONArray ruleArray = rules.optJSONArray(strChar);
                     if (ruleArray != null) {
                         for (Object or : ruleArray) {
@@ -85,6 +108,7 @@ public class LSystem {
                         system.addRule(s, rule);
                     }
                     
+                    //Add the character's action if exists
                     if (actions.has(strChar)) {
                         String action = actions.optString(strChar);
                         system.setAction(s, action);
@@ -93,9 +117,11 @@ public class LSystem {
                 }
             }
         }
+        //Set the initial axiom
         String axiom = input.getString("axiom");
         system.setAxiom(axiom);
         
+        //Set all the parameters
         JSONObject params = input.getJSONObject("parameters");
         
         int steps = params.optInt("step", 1);
@@ -111,7 +137,9 @@ public class LSystem {
         }
     }
  
-    /* accès aux règles et exécution */
+    /**
+     * @return Axiom of the current L-System
+     */
     public Iterator<Symbol> getAxiom(){
         LinkedList<Symbol> symbolSequence = new LinkedList<>();
         
@@ -124,29 +152,28 @@ public class LSystem {
         return symbolSequence.iterator();
         
     }
+    /**
+     * @return Expansion of the symbol using rules of the current L-System. If there are multiple rules, returns a random expansion using a uniform distribution
+     */
     public Iterator<Symbol> rewrite(Symbol sym) {
         List<String> ruleList = ruleDict.get(sym);
         LinkedList<Symbol> newSymbolList = new LinkedList<>();
         
-        String rule = "";
-        
         if (ruleList != null && !ruleList.isEmpty()) {
-            
-            rule = ruleList.get((int)Math.floor(Math.random() * ruleList.size()));
+             //Fetch a random rule expansion
+            String rule = ruleList.get((int)Math.floor(Math.random() * ruleList.size()));
 
             for (char c : rule.toCharArray()) {
-                if (symbolDict.containsKey(c)) {
-                    newSymbolList.add(symbolDict.get(c));
-                } else {
-                    Symbol newSym = new Symbol(c);
-                    symbolDict.put(c, newSym);
-                    newSymbolList.add(newSym);
-                }
+                newSymbolList.add(addSymbol(c));
             }
         }
-        
         return newSymbolList.iterator();
     }
+    /**
+     * Sends the turtle actions based on the symbol
+     * @param turtle Turtle instance
+     * @param sym Symbol
+     */
     public void tell(Turtle turtle, Symbol sym) {
         if (actionDict.containsKey(sym)) {
             switch (actionDict.get(sym)) {
@@ -201,6 +228,11 @@ public class LSystem {
     }
  
     
+    /**
+     * Starts the drawing using a turtle
+     * @param turtle Turtle instance
+     * @param n Depth of expansion
+     */
     public void tell(Turtle turtle, int n) {
         Iterator<Symbol> axiomIterator = getAxiom();
         
@@ -210,22 +242,30 @@ public class LSystem {
         
     }
     
-    
-    /* opérations avancées */
+    /**
+     * Expands a sequence using the current L-System rules
+     * @param seq Input sequence
+     * @param n Depth of expansion
+     * @return Expansion of sequence of depth n
+     */
     public Iterator<Symbol> applyRules(Iterator<Symbol> seq, int n) {
         List<Symbol> symbolList = new LinkedList<>();
         
+        //Copes the sequence into the new symbolList
         while (seq.hasNext()) {
             symbolList.add(seq.next());
         }
         
+        //For all the symbols in the symbolList
         for (int i=0; i<n; i++) {
+            //Create a new symbolList again
             List<Symbol> newSymbolList = new LinkedList<>();
             
+            //For all the symbols in symbolList, expand them and add to newSymbolList
             for (Symbol symbol : symbolList) {
                 Iterator<Symbol> expansion = rewrite(symbol);
                 
-                
+                //If there's an expansion, add the expansion. Otherwise add the symbol itself.
                 if (expansion.hasNext()) {
                     while (expansion.hasNext()) {
                         newSymbolList.add(expansion.next());
@@ -233,17 +273,27 @@ public class LSystem {
                 } else {
                     newSymbolList.add(symbol);
                 }
-                
             }
-            
+            //Set symbolList as newSymbolList to continue the iteration
             symbolList = newSymbolList;
             
         }
         
         return symbolList.iterator();
     }
+    
+    /**
+     * Sends the turtle actions recursively based on rules and actions
+     * @param turtle Turtle instance
+     * @param sym Symbol
+     * @param n Depth of action expansions
+     */
     public void tell(Turtle turtle, Symbol sym, int n){
-        if (n > 0) {
+        //Base case
+        if (n == 0) {
+            tell(turtle, sym);
+        //If n > 0, recursively call tell() with the expansion
+        } else if (n > 0) {
             Iterator<Symbol> expansion = rewrite(sym);
             
             if (expansion.hasNext()) {
@@ -253,15 +303,18 @@ public class LSystem {
             } else {
                 tell(turtle, sym);
             }
-            
-        } else if (n == 0) {
-            tell(turtle, sym);
         }
     }
+
+    /**
+     * Gets the bounding box of the final drawing using a turtle and the current L-System
+     * @param turtle Turtle instance
+     * @param seq Sequence of symbols (Axiom)
+     * @param n Depth of expansions
+     * @return The bounding box of the drawing
+     */
     public Rectangle2D getBoundingBox(Turtle turtle, Iterator<Symbol>seq, int n) {
         turtle = turtle.getEmptyClone();
-        Point2D lastPosition = turtle.getPosition();
-        double lastAngle = turtle.getAngle();
         
         double minX = turtle.getPosition().getX();
         double maxX = turtle.getPosition().getX();
@@ -269,8 +322,10 @@ public class LSystem {
         double minY = turtle.getPosition().getY();
         double maxY = turtle.getPosition().getY();
         
+        //Get the final symbol sequence
         Iterator<Symbol> symbolIterator = applyRules(seq, n);
         
+        //Get the max and min of x and y
         while (symbolIterator.hasNext()) {
             tell(turtle, symbolIterator.next());
             double thisX = turtle.getPosition().getX();
@@ -283,10 +338,6 @@ public class LSystem {
             maxY = Math.max(thisY, maxY);
             
         }
-        
-        
-        turtle.init(lastPosition, lastAngle);
-        
         
         return new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
     }

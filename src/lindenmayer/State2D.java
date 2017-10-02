@@ -10,8 +10,9 @@ import uvector.Vector2;
 import uvector.Vectors;
 
 /**
- *
- * @author bowen
+ * State class used to track the Turtle2D's state in a stack
+ * IFT2015 Devoir 1, Bowen Peng et Lifeng Wan
+ * @author bowen, lifeng
  */
 public class State2D {
     private final Vector2 position;
@@ -38,17 +39,36 @@ public class State2D {
         this.angle = angle;
     }
     
+    /**
+     * @return Current position
+     */
     public Point2D getPosition() {
         return new Point2D.Double(position.getX(), position.getY());
     }
+
+    /**
+     * @return Angle in radians
+     */
     public double getAngle() {
         return angle;
     }
     
+    /**
+     * Adds two states together
+     * @param state1
+     * @param state2
+     * @return New state based on state1 + state2
+     */
     public static State2D add(State2D state1, State2D state2) {
         return new State2D(Vectors.add(state1.position, state2.position), state1.getAngle() + state2.getAngle());
     }
     
+    /**
+     * Subtracts the second state from the first state
+     * @param state1
+     * @param state2
+     * @return New state based on state1 - state2
+     */
     public static State2D sub(State2D state1, State2D state2) {
         return new State2D(Vectors.sub(state1.position, state2.position), state1.getAngle() - state2.getAngle());
     }

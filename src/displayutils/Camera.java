@@ -18,19 +18,16 @@ public class Camera {
     private Scene currentScene;
     private double xPos;
     private double yPos;
-    private double zPos;
     private double scale;
-    
-    private double rotX, rotY, rotZ;
     
     private int screenOffsetx;
     private int screenOffsety;
 
     Camera(Scene currentScene, int xsize, int ysize) {
-        this(currentScene, xsize/2, ysize/2, 0, 1, xsize, ysize);
+        this(currentScene, xsize/2, ysize/2, 1, xsize, ysize);
     }
     
-    Camera(Scene currenScene, double x, double y, double z, double s, int xsize, int ysize) {
+    Camera(Scene currenScene, double x, double y, double s, int xsize, int ysize) {
         this.currentScene = currenScene;
         xPos = x;
         yPos = y;
@@ -65,12 +62,6 @@ public class Camera {
         this.yPos = yPos;
     }
 
-    public double getzPos() {
-        return zPos;
-    }
-    public void setzPos(double zPos) {
-        this.zPos = zPos;
-    }
     
     public double getScale() {
         return scale;
@@ -91,25 +82,7 @@ public class Camera {
         xPos += (x*(1/scale));
     }
     public void addyPos(double y) {
-        yPos += (y*(1/scale));
-    }
-    public void addxPosMaxPrec(double x) {
-        double newXPos = xPos + (x*(1/scale));
-        if (newXPos == xPos) {
-            int dir = (x < 0.0) ? -1 : 1; 
-            xPos = Double.longBitsToDouble(Double.doubleToLongBits(xPos) + dir);
-        } else {
-            xPos = newXPos;
-        }
-    }
-    public void addyPosMaxPrec(double y) {
-        double newYPos = yPos + (y*(1/scale));
-        if (newYPos == yPos) {
-            int dir = (y < 0.0) ? -1 : 1; 
-            yPos = Double.longBitsToDouble(Double.doubleToLongBits(yPos) - dir);
-        } else {
-            yPos = newYPos;
-        }
+        yPos -= (y*(1/scale));
     }
     public void addScale(int n) {
         if (n > 0) {
@@ -124,7 +97,7 @@ public class Camera {
         }
     }
     private void multiplyScale() {
-        if (scale < MAXIMUM_SCALE && enoughPrecisionToZoom()) {
+        if (scale < MAXIMUM_SCALE) {
             scale *= ZOOM_FACTOR;
         }
         if (scale > MAXIMUM_SCALE) {
@@ -139,23 +112,16 @@ public class Camera {
             scale = MINIMUM_SCALE;
         }
     }
-    private boolean enoughPrecisionToZoom() {
-        if (xPos + (20*(0.5/scale)) == xPos || xPos - (20*(0.5/scale)) == xPos) {
-            return false;
-        } else {
-            return true;
-        }
-    }
     
     public Camera copy() {
-        return new Camera(currentScene, xPos, yPos, zPos, scale, screenOffsetx*2, screenOffsety*2);
+        return new Camera(currentScene, xPos, yPos, scale, screenOffsetx*2, screenOffsety*2);
     }
     
     public double getScreenX(double x) {
         return ((x - getxPos()) * getScale() + getxScrOffset());
     }
     public double getScreenY(double y) {
-        return ((y - getyPos()) * getScale() + getyScrOffset());
+        return ((-y + getyPos()) * getScale() + getyScrOffset());
     }
     public double getScreenR(double radius) {
         return (radius * getScale());

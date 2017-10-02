@@ -15,8 +15,8 @@ import javax.swing.JComponent;
 import uvector.Vector2;
 
 /**
- *
- * @author bowen
+ * IFT2015 Devoir 1, Bowen Peng et Lifeng Wan
+ * @author bowen, lifeng
  */
 public class Turtle2D implements Turtle {
     
@@ -36,6 +36,10 @@ public class Turtle2D implements Turtle {
         currentState = new State2D();
     }
     
+    /**
+     * Sets a JPanel to draw with
+     * @param component Component to draw with
+     */
     public void setComponent(JPanelLinden component) {
         this.component = component;
     }
@@ -44,7 +48,7 @@ public class Turtle2D implements Turtle {
     public void draw() {
         Vector2 diff = getMovementDifference();
         
-        //Draw here
+        //Draw if there is a component
         if (component != null) {
             
             double x0 = currentState.getPosition().getX();
@@ -67,18 +71,23 @@ public class Turtle2D implements Turtle {
     public void move() {
         move(getMovementDifference());
     }
+    
+    /**
+     * Moves turtle by the amount of the 2-vector
+     * @param vector Relative position as a 2-vector
+     */
     public void move(Vector2 vector) {
         currentState = State2D.add(currentState, new State2D(vector));
     }
-
-    @Override
-    public void turnR() {
-        currentState = State2D.sub(currentState, new State2D(turnAngle));
-    }
-
+    
     @Override
     public void turnL() {
         currentState = State2D.add(currentState, new State2D(turnAngle));
+    }
+    
+    @Override
+    public void turnR() {
+        currentState = State2D.sub(currentState, new State2D(turnAngle));
     }
 
     @Override
@@ -112,6 +121,9 @@ public class Turtle2D implements Turtle {
         return getAngleRad() * PIU180;
     }
     
+    /**
+     * @return Angle in radians
+     */
     public double getAngleRad() {
         return currentState.getAngle();
     }
